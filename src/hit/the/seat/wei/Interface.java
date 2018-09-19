@@ -1,0 +1,1547 @@
+/*
+Name: Ruihan Wei
+Date: 2016/6/2
+Course: ICS4U
+Description: a program that implements the game Hit the Seat
+Note: "highlighted" lines are used for interview
+ */
+package hit.the.seat.wei;
+
+import java.util.*;
+import javax.swing.ImageIcon;
+import javax.swing.*;
+import java.awt.*;
+
+/**
+ *
+ * @author apple1
+ */
+public class Interface extends javax.swing.JFrame {
+
+    static Seat[][] classroom = new Seat[6][4];      // classroom with seats, first index represent the column number and the second represent the row number
+    static LinkedQueue player1 = new LinkedQueue();  // 2 players a linked queue of students for both players are created
+    static LinkedQueue player2 = new LinkedQueue();
+    static Random rand = new Random();               // random number generator
+    static int round = 1;                            // round 1
+    static int currentplayer = 1;                    // to keep track of the current player
+    static boolean isSecondMove = false;             // determine if it is the second move for the player (occupying another desk)
+    static int player1points = 0;                    // keeping track of the points
+    static int player2points = 0;
+    Font font1 = new Font("SansSerif", Font.BOLD, 20);  // setting the font
+    Seat Large = new Seat("Large");                     //creating two seat objects
+    Seat Long = new Seat("LongHand");
+
+    /**
+     * Creates new form Interface
+     */
+    public Interface() {
+
+        initComponents();
+
+        int randomn = 0; //storing the random number, 0: Large, 1: LongHand
+        int randindex = 0; // another variable is added when generating the index, if only 1 number is used , a separate condition is required for the last seat which takes about the same computation as adding another variable
+
+        for (int i = 0; i < 6; i++) {
+            for (int j = 0; j < 4; j++) {
+                classroom[i][j] = new Seat("Empty");      // generate an empty classroom first
+            }
+        }
+
+        for (int i = 0; i < 12; i++) {          // twelve students are added in since that is the max number of students
+            randomn = rand.nextInt(2);          // randomly generating the queues of students
+            if (randomn == 0) {
+                player1.enqueue(Large);         // enqueue the student into the two player queues
+            } else {
+                player1.enqueue(Long);
+            }
+
+            randomn = rand.nextInt(2);
+            if (randomn == 0) {
+                player2.enqueue(Large);
+            } else {
+                player2.enqueue(Long);
+            }
+        }
+
+        int loop = 1;
+        while (loop <= 3) {              // randomly generating seats with books
+            randomn = rand.nextInt(6);
+            randindex = rand.nextInt(4);
+            if (classroom[randomn][randindex].isEmpty()) {          //when the seat is not taken by a student or book, 
+                classroom[randomn][randindex] = new Seat("Books");  //set the seat to book type
+                loop++;             // only add 1 to the loop if a random book seat is generated
+            }
+        }
+
+        loop = 1;
+        while (loop <= 3) {                 // randonly generate an occupied seat
+            randomn = rand.nextInt(6);
+            randindex = rand.nextInt(4);
+            if (classroom[randomn][randindex].isEmpty()) {  
+                classroom[randomn][randindex] = Long;   // it doesn't really matter which student is used here, as long as a student occupies the seat
+                loop++;                                 
+            }
+        }
+
+        for (int i = 0; i < 6; i++) {       // loop to set the labels of the seats
+            for (int j = 0; j < 4; j++) {
+                if (classroom[i][j].isBook()) { // book label
+                    action(i, j, "setbook");
+                }
+
+                if (classroom[i][j].isStudent()) { // occupy label
+                    action(i, j, "occupy");
+                }
+            }
+        }
+
+        if ((round + 2) % 2 == 1) {           // determine the current player
+            currentplayer = 1;
+            DisableFor(player1.first());      // disable buttons for the student type, the first method is used to check the first student
+        } else {
+            currentplayer = 2;
+            DisableFor(player2.first());      
+        }
+        // outputting the information
+        info.setText("Welcome to hit the seat!\r\nPlayer1's next student: " + player1.first().getType() + "\r\nPlayer2's next student: " + player2.first().getType() + "\r\nRound " + (round) + "\r\nCurrent Player is: Player " + currentplayer + "\r\nPlease select your move (click twice at different seats for the two seats you are choosing to occupy)");
+        info.setFont(font1);
+
+    }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        i11 = new javax.swing.JButton();
+        i21 = new javax.swing.JButton();
+        i31 = new javax.swing.JButton();
+        i41 = new javax.swing.JButton();
+        i51 = new javax.swing.JButton();
+        i61 = new javax.swing.JButton();
+        i12 = new javax.swing.JButton();
+        i22 = new javax.swing.JButton();
+        i32 = new javax.swing.JButton();
+        i42 = new javax.swing.JButton();
+        i52 = new javax.swing.JButton();
+        i62 = new javax.swing.JButton();
+        i13 = new javax.swing.JButton();
+        i23 = new javax.swing.JButton();
+        i33 = new javax.swing.JButton();
+        i43 = new javax.swing.JButton();
+        i53 = new javax.swing.JButton();
+        i63 = new javax.swing.JButton();
+        i14 = new javax.swing.JButton();
+        i24 = new javax.swing.JButton();
+        i34 = new javax.swing.JButton();
+        i44 = new javax.swing.JButton();
+        i54 = new javax.swing.JButton();
+        i64 = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        info = new javax.swing.JTextArea();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        i11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/hit/the/seat/wei/seat.png"))); // NOI18N
+        i11.setToolTipText("");
+        i11.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                i11ActionPerformed(evt);
+            }
+        });
+
+        i21.setIcon(new javax.swing.ImageIcon(getClass().getResource("/hit/the/seat/wei/seat.png"))); // NOI18N
+        i21.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                i21ActionPerformed(evt);
+            }
+        });
+
+        i31.setIcon(new javax.swing.ImageIcon(getClass().getResource("/hit/the/seat/wei/seat.png"))); // NOI18N
+        i31.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                i31ActionPerformed(evt);
+            }
+        });
+
+        i41.setIcon(new javax.swing.ImageIcon(getClass().getResource("/hit/the/seat/wei/seat.png"))); // NOI18N
+        i41.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                i41ActionPerformed(evt);
+            }
+        });
+
+        i51.setIcon(new javax.swing.ImageIcon(getClass().getResource("/hit/the/seat/wei/seat.png"))); // NOI18N
+        i51.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                i51ActionPerformed(evt);
+            }
+        });
+
+        i61.setIcon(new javax.swing.ImageIcon(getClass().getResource("/hit/the/seat/wei/seat.png"))); // NOI18N
+        i61.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                i61ActionPerformed(evt);
+            }
+        });
+
+        i12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/hit/the/seat/wei/seat.png"))); // NOI18N
+        i12.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                i12ActionPerformed(evt);
+            }
+        });
+
+        i22.setIcon(new javax.swing.ImageIcon(getClass().getResource("/hit/the/seat/wei/seat.png"))); // NOI18N
+        i22.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                i22ActionPerformed(evt);
+            }
+        });
+
+        i32.setIcon(new javax.swing.ImageIcon(getClass().getResource("/hit/the/seat/wei/seat.png"))); // NOI18N
+        i32.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                i32ActionPerformed(evt);
+            }
+        });
+
+        i42.setIcon(new javax.swing.ImageIcon(getClass().getResource("/hit/the/seat/wei/seat.png"))); // NOI18N
+        i42.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                i42ActionPerformed(evt);
+            }
+        });
+
+        i52.setIcon(new javax.swing.ImageIcon(getClass().getResource("/hit/the/seat/wei/seat.png"))); // NOI18N
+        i52.setToolTipText("");
+        i52.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                i52ActionPerformed(evt);
+            }
+        });
+
+        i62.setIcon(new javax.swing.ImageIcon(getClass().getResource("/hit/the/seat/wei/seat.png"))); // NOI18N
+        i62.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                i62ActionPerformed(evt);
+            }
+        });
+
+        i13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/hit/the/seat/wei/seat.png"))); // NOI18N
+        i13.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                i13ActionPerformed(evt);
+            }
+        });
+
+        i23.setIcon(new javax.swing.ImageIcon(getClass().getResource("/hit/the/seat/wei/seat.png"))); // NOI18N
+        i23.setToolTipText("");
+        i23.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                i23ActionPerformed(evt);
+            }
+        });
+
+        i33.setIcon(new javax.swing.ImageIcon(getClass().getResource("/hit/the/seat/wei/seat.png"))); // NOI18N
+        i33.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                i33ActionPerformed(evt);
+            }
+        });
+
+        i43.setIcon(new javax.swing.ImageIcon(getClass().getResource("/hit/the/seat/wei/seat.png"))); // NOI18N
+        i43.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                i43ActionPerformed(evt);
+            }
+        });
+
+        i53.setIcon(new javax.swing.ImageIcon(getClass().getResource("/hit/the/seat/wei/seat.png"))); // NOI18N
+        i53.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                i53ActionPerformed(evt);
+            }
+        });
+
+        i63.setIcon(new javax.swing.ImageIcon(getClass().getResource("/hit/the/seat/wei/seat.png"))); // NOI18N
+        i63.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                i63ActionPerformed(evt);
+            }
+        });
+
+        i14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/hit/the/seat/wei/seat.png"))); // NOI18N
+        i14.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                i14ActionPerformed(evt);
+            }
+        });
+
+        i24.setIcon(new javax.swing.ImageIcon(getClass().getResource("/hit/the/seat/wei/seat.png"))); // NOI18N
+        i24.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                i24ActionPerformed(evt);
+            }
+        });
+
+        i34.setIcon(new javax.swing.ImageIcon(getClass().getResource("/hit/the/seat/wei/seat.png"))); // NOI18N
+        i34.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                i34ActionPerformed(evt);
+            }
+        });
+
+        i44.setIcon(new javax.swing.ImageIcon(getClass().getResource("/hit/the/seat/wei/seat.png"))); // NOI18N
+        i44.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                i44ActionPerformed(evt);
+            }
+        });
+
+        i54.setIcon(new javax.swing.ImageIcon(getClass().getResource("/hit/the/seat/wei/seat.png"))); // NOI18N
+        i54.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                i54ActionPerformed(evt);
+            }
+        });
+
+        i64.setIcon(new javax.swing.ImageIcon(getClass().getResource("/hit/the/seat/wei/seat.png"))); // NOI18N
+        i64.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                i64ActionPerformed(evt);
+            }
+        });
+
+        info.setColumns(20);
+        info.setRows(5);
+        jScrollPane1.setViewportView(info);
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1328, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(24, 24, 24)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(i11)
+                                    .addComponent(i12)
+                                    .addComponent(i13))
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(i22)
+                                    .addComponent(i21)
+                                    .addComponent(i23)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(i14)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(i24)))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(i34)
+                                .addGap(18, 18, 18)
+                                .addComponent(i44))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(i31)
+                                    .addComponent(i32))
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(i41)
+                                    .addComponent(i42)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(i33)
+                                .addGap(18, 18, 18)
+                                .addComponent(i43)))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(i51)
+                                .addGap(18, 18, 18)
+                                .addComponent(i61))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(i54)
+                                .addGap(18, 18, 18)
+                                .addComponent(i64))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(i52)
+                                .addGap(18, 18, 18)
+                                .addComponent(i62))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(i53)
+                                .addGap(18, 18, 18)
+                                .addComponent(i63)))))
+                .addContainerGap(721, Short.MAX_VALUE))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(i21)
+                    .addComponent(i11)
+                    .addComponent(i31)
+                    .addComponent(i41)
+                    .addComponent(i51)
+                    .addComponent(i61))
+                .addGap(29, 29, 29)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(i12)
+                    .addComponent(i22)
+                    .addComponent(i32)
+                    .addComponent(i42)
+                    .addComponent(i52)
+                    .addComponent(i62))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(i23)
+                    .addComponent(i13)
+                    .addComponent(i33)
+                    .addComponent(i43)
+                    .addComponent(i53)
+                    .addComponent(i63))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(i34)
+                    .addComponent(i14)
+                    .addComponent(i24)
+                    .addComponent(i44)
+                    .addComponent(i54)
+                    .addComponent(i64))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 273, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(19, Short.MAX_VALUE))
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+// when a button is pressed, invoke the game method with the corresponding indicies, the same action occurs for all buttons
+    private void i11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_i11ActionPerformed
+        Game(0, 0);
+    }//GEN-LAST:event_i11ActionPerformed
+// same as above
+    private void i13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_i13ActionPerformed
+        Game(0, 2);
+    }//GEN-LAST:event_i13ActionPerformed
+
+    private void i21ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_i21ActionPerformed
+        Game(1, 0);
+    }//GEN-LAST:event_i21ActionPerformed
+
+    private void i31ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_i31ActionPerformed
+        Game(2, 0);
+    }//GEN-LAST:event_i31ActionPerformed
+
+    private void i41ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_i41ActionPerformed
+        Game(3, 0);
+    }//GEN-LAST:event_i41ActionPerformed
+
+    private void i51ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_i51ActionPerformed
+        Game(4, 0);
+    }//GEN-LAST:event_i51ActionPerformed
+
+    private void i61ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_i61ActionPerformed
+        Game(5, 0);
+    }//GEN-LAST:event_i61ActionPerformed
+
+    private void i12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_i12ActionPerformed
+        Game(0, 1);
+    }//GEN-LAST:event_i12ActionPerformed
+
+    private void i22ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_i22ActionPerformed
+        Game(1, 1);
+    }//GEN-LAST:event_i22ActionPerformed
+
+    private void i32ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_i32ActionPerformed
+        Game(2, 1);
+    }//GEN-LAST:event_i32ActionPerformed
+
+    private void i42ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_i42ActionPerformed
+        Game(3, 1);
+    }//GEN-LAST:event_i42ActionPerformed
+
+    private void i52ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_i52ActionPerformed
+        Game(4, 1);
+    }//GEN-LAST:event_i52ActionPerformed
+
+    private void i62ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_i62ActionPerformed
+        Game(5, 1);
+    }//GEN-LAST:event_i62ActionPerformed
+
+    private void i23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_i23ActionPerformed
+        Game(1, 2);
+    }//GEN-LAST:event_i23ActionPerformed
+
+    private void i33ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_i33ActionPerformed
+        Game(2, 2);
+    }//GEN-LAST:event_i33ActionPerformed
+
+    private void i43ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_i43ActionPerformed
+        Game(3, 2);
+    }//GEN-LAST:event_i43ActionPerformed
+
+    private void i53ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_i53ActionPerformed
+        Game(4, 2);
+    }//GEN-LAST:event_i53ActionPerformed
+
+    private void i63ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_i63ActionPerformed
+        Game(5, 2);
+    }//GEN-LAST:event_i63ActionPerformed
+
+    private void i14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_i14ActionPerformed
+        Game(0, 3);
+    }//GEN-LAST:event_i14ActionPerformed
+
+    private void i24ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_i24ActionPerformed
+        Game(1, 3);
+    }//GEN-LAST:event_i24ActionPerformed
+
+    private void i34ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_i34ActionPerformed
+        Game(2, 3);
+    }//GEN-LAST:event_i34ActionPerformed
+
+    private void i44ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_i44ActionPerformed
+        Game(3, 3);
+    }//GEN-LAST:event_i44ActionPerformed
+
+    private void i54ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_i54ActionPerformed
+        Game(4, 3);
+    }//GEN-LAST:event_i54ActionPerformed
+
+    private void i64ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_i64ActionPerformed
+        Game(5, 3);
+    }//GEN-LAST:event_i64ActionPerformed
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(Interface.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(Interface.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(Interface.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(Interface.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+        /* Create and display the form */
+
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new Interface().setVisible(true);
+            }
+        });
+
+    }
+
+    /*
+    method to play the game
+    pre: -1 < index1 <6    &&     -1< index2 <4
+    post: none
+     */
+    
+    public void Game(int index1, int index2) {
+
+        boolean ended = false;              // keep track of whether the game has ended
+        if (isSecondMove == true) {
+
+            isSecondMove = false; // setting the next move
+
+            classroom[index1][index2] = Large;  // any type of student can occupy the seat as long as it is a student 
+            round++;                            // add 1 to the number of rounds during the second move 
+
+            if (currentplayer == 1) {           // adding points to the players in the second move
+                player1points += 2;
+            } else {
+                player2points += 2;
+            }
+
+            if ((round + 2) % 2 == 1) {      // using the round to determine the current player
+                currentplayer = 1;           // assigning value to the currentplayer vairable 
+                player2.dequeue();           // dequeue the used student, the two player queues together contain enough students to fill the entire classroom so the students will never run out
+                action(index1, index2, "Player2");          // occupy the seat occupoied by the last player
+                ended = DisableFor(player1.first());        // disable/enable buttons for the current student
+            } else {
+                currentplayer = 2;              // same as above
+                player1.dequeue();
+                action(index1, index2, "Player1");
+                ended = DisableFor(player2.first());
+            }
+
+            if (ended == true) {        // when it ends 
+                Win inFrame;            // make the win frame
+                if (player1points > player2points) {
+                    inFrame = new Win(1);  // passing an int to "Win"
+                    this.dispose();   // disposing this frame            
+                    inFrame.setVisible(true);   // setting the new frame visible
+                } else if (player2points > player1points) {
+                    inFrame = new Win(2);  // passing an int to "Win"
+                    this.dispose();   // disposing this frame            
+                    inFrame.setVisible(true);   // setting the new frame visible 
+                } else {
+                    inFrame = new Win(0);  // passing an int to "Win"
+                    this.dispose();   // disposing this frame            
+                    inFrame.setVisible(true);   // setting the new frame visible
+                }
+            }
+
+            // setting the text box to the current information
+            info.setText("\rRound " + (round) + "\r\nPlayer1's next student: " + player1.first().getType() + "\r\nPlayer2's next student: " + player2.first().getType() + "\r\nCurrent Player is: Player " + currentplayer + "\r\nPlease select your move (click twice at different seats for the two seats you are choosing to occupy)");
+            info.setFont(font1);
+
+        } else {            // first move
+            isSecondMove = true;                    // setting the next move 
+            classroom[index1][index2] = Large;      // any type of student can occupy the seat as long as it is a student 
+            info.setText("Please perform your next move.");
+            info.setFont(font1);
+
+            DisableAll();       // diable all the buttons first
+
+            if (currentplayer == 1) {       // occupy the seat accordingly
+                action(index1, index2, "Player1");
+            } else {
+                action(index1, index2, "Player2");
+            }
+
+            if (currentplayer == 1) {
+                if (player1.first().getType().equals("LongHand")) { // determine which seats to enable
+                    for (int k = 0; k < 4; k++) {
+                        try {
+                            if (k == 0) {       // enabling the seats that a long hand student can occupy (on the second move). an exception is thrown if the check is out of bounds
+                                if (!(classroom[index1 - 1][index2 - 1].isEmpty() || classroom[index1 - 1][index2 - 1].isBook())) {  // an exception will be thrown if the indecies are not out of bounds to perform the next check, checking top left corner
+                                    throw new ArrayIndexOutOfBoundsException();   // manually throw an exception if the seat is not occupyable
+                                } else {
+                                    action((index1 - 1), (index2 - 1), "enable");  // enable these buttons if they are clickable (do not violat the rules) for the seats around the chosen seat
+                                }
+                            }
+
+                            if (k == 1) {       // same as above, checking top right corner
+                                if (!(classroom[index1 + 1][index2 - 1].isEmpty() || classroom[index1 + 1][index2 - 1].isBook())) {
+                                    throw new ArrayIndexOutOfBoundsException();
+                                } else {
+                                    action((index1 + 1), (index2 - 1), "enable");
+
+                                }
+                            }
+
+                            if (k == 2) {       // same as above, checking bottom right corner
+                                if (!(classroom[index1 + 1][index2 + 1].isEmpty() || classroom[index1 + 1][index2 + 1].isBook())) {
+                                    throw new ArrayIndexOutOfBoundsException();
+                                } else {
+                                    action((index1 + 1), (index2 + 1), "enable");
+
+                                }
+                            }
+
+                            if (k == 3) {       //same as above, checking bottom left corner
+                                if (!(classroom[index1 - 1][index2 + 1].isEmpty() || classroom[index1 - 1][index2 + 1].isBook())) {
+                                    throw new ArrayIndexOutOfBoundsException();
+                                } else {
+                                    action((index1 - 1), (index2 + 1), "enable");
+
+                                }
+                            }
+                        } catch (ArrayIndexOutOfBoundsException e) {        // catching the exception
+                               // the for loop is continued if an exception is catched
+                        }
+                    }
+                } else {            // same as above except now for the large student
+                    for (int k = 0; k < 4; k++) {
+                        try {
+                            if (k == 0) { // checking rights
+                                if (!(classroom[index1 + 1][index2].isEmpty())) { 
+                                    throw new ArrayIndexOutOfBoundsException();  // same case for exception
+                                } else {
+                                    action((index1 + 1), index2, "enable");
+
+                                }
+                            }
+
+                            if (k == 1) {    // cheching left
+                                if (!(classroom[index1 - 1][index2].isEmpty())) {
+                                    throw new ArrayIndexOutOfBoundsException();
+                                } else {
+                                    action((index1 - 1), index2, "enable");
+
+                                }
+                            }
+
+                            if (k == 2) {   // checking down
+                                if (!(classroom[index1][index2 + 1].isEmpty())) {
+                                    throw new ArrayIndexOutOfBoundsException();
+                                } else {
+                                    action(index1, (index2 + 1), "enable");
+
+                                }
+                            }
+
+                            if (k == 3) {   // checking up
+                                if (!(classroom[index1][index2 - 1].isEmpty())) {
+                                    throw new ArrayIndexOutOfBoundsException();
+                                } else {
+                                    action(index1, (index2 - 1), "enable");
+
+                                }
+                            }
+                        } catch (ArrayIndexOutOfBoundsException e) {
+
+                        }
+                    }
+                }
+            } else {    // second player, the coding principle is the same as above
+                if (player2.first().getType().equals("LongHand")) {
+                    for (int k = 0; k < 4; k++) {
+
+                        try {
+                            if (k == 0) {
+                                if (!(classroom[index1 - 1][index2 - 1].isEmpty() || classroom[index1 - 1][index2 - 1].isBook())) {
+                                    throw new ArrayIndexOutOfBoundsException();
+                                } else {
+                                    action(index1 - 1, index2 - 1, "enable");
+                                }
+                            }
+
+                            if (k == 1) {
+                                if (!(classroom[index1 + 1][index2 - 1].isEmpty() || classroom[index1 + 1][index2 - 1].isBook())) {
+                                    throw new ArrayIndexOutOfBoundsException();
+                                } else {
+                                    action(index1 + 1, index2 - 1, "enable");
+
+                                }
+                            }
+
+                            if (k == 2) {
+                                if (!(classroom[index1 + 1][index2 + 1].isEmpty() || classroom[index1 + 1][index2 + 1].isBook())) {
+                                    throw new ArrayIndexOutOfBoundsException();
+                                } else {
+                                    action(index1 + 1, index2 + 1, "enable");
+
+                                }
+                            }
+
+                            if (k == 3) {
+                                if (!(classroom[index1 - 1][index2 + 1].isEmpty() || classroom[index1 - 1][index2 + 1].isBook())) {
+                                    throw new ArrayIndexOutOfBoundsException();
+                                } else {
+                                    action(index1 - 1, index2 + 1, "enable");
+                                }
+                            }
+                        } catch (ArrayIndexOutOfBoundsException e) {
+                            
+                        }
+                    }
+                } else {  // player2's large student
+                    for (int k = 0; k < 4; k++) {
+                        try {
+                            if (k == 0) {
+                                if (!(classroom[index1 + 1][index2].isEmpty())) {
+                                    throw new ArrayIndexOutOfBoundsException();
+                                } else {
+                                    action(index1 + 1, index2, "enable");
+                                }
+                            }
+
+                            if (k == 1) {
+                                if (!(classroom[index1 - 1][index2].isEmpty())) {
+                                    throw new ArrayIndexOutOfBoundsException();
+                                } else {
+                                    action(index1 - 1, index2, "enable");
+
+                                }
+                            }
+
+                            if (k == 2) {
+                                if (!(classroom[index1][index2 + 1].isEmpty())) {
+                                    throw new ArrayIndexOutOfBoundsException();
+                                } else {
+                                    action(index1, index2 + 1, "enable");
+
+                                }
+                            }
+
+                            if (k == 3) {
+                                if (!(classroom[index1][index2 - 1].isEmpty())) {
+                                    throw new ArrayIndexOutOfBoundsException();
+                                } else {
+                                    action(index1, index2 - 1, "enable");
+
+                                }
+                            }
+                        } catch (ArrayIndexOutOfBoundsException e) {     // catching the exception
+
+                        }
+                    }
+                }
+        }
+
+    }
+    }
+
+    /*
+    disable all the buttons
+    pre: none
+    post: none
+     */
+    public void DisableAll() {
+        i11.setEnabled(false);
+        i12.setEnabled(false);
+        i13.setEnabled(false);
+        i14.setEnabled(false);
+        i21.setEnabled(false);
+        i22.setEnabled(false);
+        i23.setEnabled(false);
+        i24.setEnabled(false);
+        i31.setEnabled(false);
+        i32.setEnabled(false);
+        i33.setEnabled(false);
+        i34.setEnabled(false);
+        i41.setEnabled(false);
+        i42.setEnabled(false);
+        i43.setEnabled(false);
+        i44.setEnabled(false);
+        i51.setEnabled(false);
+        i52.setEnabled(false);
+        i53.setEnabled(false);
+        i54.setEnabled(false);
+        i61.setEnabled(false);
+        i62.setEnabled(false);
+        i63.setEnabled(false);
+        i64.setEnabled(false);
+    }
+
+    /*
+    Disable/enable buttons for a specific type of student and returns a variable to indicate if the game ended with no buttons choosable
+    pre: none
+    post: boolean returned
+     */
+    public boolean DisableFor(Seat a) {
+        boolean End = true;
+        boolean check = false;
+        if ((a.getType().equals("LongHand"))) {     // disabling for longhand student
+            for (int i = 0; i < 6; i++) {
+                for (int j = 0; j < 4; j++) {
+                    if (classroom[i][j].isEmpty() || classroom[i][j].isBook()) {    // go into checks only if the seat is empty or full of books
+                        for (int k = 0; k < 4; k++) {
+                            try {
+                                if (k == 0) {
+                                    if (!(classroom[i - 1][j - 1].isEmpty() || classroom[i - 1][j - 1].isBook())) { // checking top left, an exception is thrown if the index checking is invalid in the array
+                                        throw new ArrayIndexOutOfBoundsException();  // throw an exception if the move violates the rules
+                                    } else {
+                                        check = true;
+                                    }
+                                }
+
+                                if (k == 1) {
+                                    if (!(classroom[i + 1][j - 1].isEmpty() || classroom[i + 1][j - 1].isBook())) {  // checking top right
+                                        throw new ArrayIndexOutOfBoundsException(); 
+                                    } else {
+                                        check = true;
+                                    }
+                                }
+
+                                if (k == 2) {
+                                    if (!(classroom[i + 1][j + 1].isEmpty() || classroom[i + 1][j + 1].isBook())) {  // checking bottom right
+                                        throw new ArrayIndexOutOfBoundsException();
+                                    } else {
+                                        check = true;
+                                    }
+                                }
+
+                                if (k == 3) {
+                                    if (!(classroom[i - 1][j + 1].isEmpty() || classroom[i - 1][j + 1].isBook())) {   // checking bottom left
+                                        throw new ArrayIndexOutOfBoundsException();
+                                    } else {
+                                        check = true;
+                                    }
+                                }
+                            } catch (ArrayIndexOutOfBoundsException e) {
+                                
+                            }
+                        }
+                        if (check == false) {
+                            action(i, j, "disable");    // disable the buton if not choosable
+                        } else {
+                            action(i, j, "enable");   // enable the button if choosable
+                            End = false;              // make the return variable false if none of the buttons are choosable
+                        }
+                        check = false;
+                    } else {
+                        action(i, j, "disable");     // if the seat is not occupyable, disable the seat
+                    }
+                }
+            }
+        }
+
+        // large student
+        if ((a.getType().equals("Large"))) {        // same as above but for the large student
+            for (int i = 0; i < 6; i++) {
+                for (int j = 0; j < 4; j++) {
+                    if (classroom[i][j].isEmpty()) {       
+                        for (int k = 0; k < 4; k++) {
+
+                            try {
+                                if (k == 0) {
+                                    if (!(classroom[i + 1][j].isEmpty())) { // check right
+                                        throw new ArrayIndexOutOfBoundsException();
+                                    } else {
+                                        check = true;
+                                    }
+                                }
+
+                                if (k == 1) {
+                                    if (!(classroom[i - 1][j].isEmpty())) { // check left
+                                        throw new ArrayIndexOutOfBoundsException();
+                                    } else {
+                                        check = true;
+                                    }
+                                }
+
+                                if (k == 2) {
+                                    if (!(classroom[i][j + 1].isEmpty())) {   // check down
+                                        throw new ArrayIndexOutOfBoundsException();
+                                    } else {
+                                        check = true;
+                                    }
+                                }
+
+                                if (k == 3) {
+                                    if (!(classroom[i][j - 1].isEmpty())) {     // check up
+                                        throw new ArrayIndexOutOfBoundsException();
+                                    } else {
+                                        check = true;
+                                    }
+                                }
+                            } catch (ArrayIndexOutOfBoundsException e) {        
+
+                            }
+                        }
+                        if (check == false) {
+                            action(i, j, "disable");        
+                        } else {
+                            action(i, j, "enable");         
+                            End = false;        
+                        }
+                        check = false;
+
+                    } else {
+                        action(i, j, "disable");
+                    }
+                }
+            }
+        }
+        return End;     // return boolean to indicate if the game ended
+    }
+
+    /*
+    perform actions on buttons according to indicies
+    pre: none
+    post: none
+     */
+    public void action(int index1, int index2, String action) {
+        if (action.equals("disable")) {    // disabling a specific button according to the buttons
+            if ((index1 == 0) && (index2 == 0)) {
+                i11.setEnabled(false);
+            }
+
+            if ((index1 == 0) && (index2 == 1)) {
+                i12.setEnabled(false);
+            }
+
+            if ((index1 == 0) && (index2 == 2)) {
+                i13.setEnabled(false);
+            }
+
+            if ((index1 == 0) && (index2 == 3)) {
+                i14.setEnabled(false);
+            }
+
+            if ((index1 == 1) && (index2 == 0)) {
+                i21.setEnabled(false);
+            }
+
+            if ((index1 == 1) && (index2 == 1)) {
+                i22.setEnabled(false);
+            }
+
+            if ((index1 == 1) && (index2 == 2)) {
+                i23.setEnabled(false);
+            }
+
+            if ((index1 == 1) && (index2 == 3)) {
+                i24.setEnabled(false);
+            }
+
+            if ((index1 == 2) && (index2 == 0)) {
+                i31.setEnabled(false);
+            }
+
+            if ((index1 == 2) && (index2 == 1)) {
+                i32.setEnabled(false);
+            }
+
+            if ((index1 == 2) && (index2 == 2)) {
+                i33.setEnabled(false);
+            }
+
+            if ((index1 == 2) && (index2 == 3)) {
+                i34.setEnabled(false);
+            }
+
+            if ((index1 == 3) && (index2 == 0)) {
+                i41.setEnabled(false);
+            }
+
+            if ((index1 == 3) && (index2 == 1)) {
+                i42.setEnabled(false);
+            }
+
+            if ((index1 == 3) && (index2 == 2)) {
+                i43.setEnabled(false);
+            }
+
+            if ((index1 == 3) && (index2 == 3)) {
+                i44.setEnabled(false);
+            }
+
+            if ((index1 == 4) && (index2 == 0)) {
+                i51.setEnabled(false);
+            }
+            if ((index1 == 4) && (index2 == 1)) {
+                i52.setEnabled(false);
+            }
+            if ((index1 == 4) && (index2 == 2)) {
+                i53.setEnabled(false);
+            }
+            if ((index1 == 4) && (index2 == 3)) {
+                i54.setEnabled(false);
+            }
+            if ((index1 == 5) && (index2 == 0)) {
+                i61.setEnabled(false);
+            }
+            if ((index1 == 5) && (index2 == 1)) {
+                i62.setEnabled(false);
+            }
+            if ((index1 == 5) && (index2 == 2)) {
+                i63.setEnabled(false);
+            }
+            if ((index1 == 5) && (index2 == 3)) {
+                i64.setEnabled(false);
+            }
+        }
+
+        if (action.equals("enable")) {      // enabling a specific button
+            if ((index1 == 0) && (index2 == 0)) {
+                i11.setEnabled(true);
+            }
+
+            if ((index1 == 0) && (index2 == 1)) {
+                i12.setEnabled(true);
+            }
+
+            if ((index1 == 0) && (index2 == 2)) {
+                i13.setEnabled(true);
+            }
+
+            if ((index1 == 0) && (index2 == 3)) {
+                i14.setEnabled(true);
+            }
+
+            if ((index1 == 1) && (index2 == 0)) {
+                i21.setEnabled(true);
+            }
+
+            if ((index1 == 1) && (index2 == 1)) {
+                i22.setEnabled(true);
+            }
+
+            if ((index1 == 1) && (index2 == 2)) {
+                i23.setEnabled(true);
+            }
+
+            if ((index1 == 1) && (index2 == 3)) {
+                i24.setEnabled(true);
+            }
+
+            if ((index1 == 2) && (index2 == 0)) {
+                i31.setEnabled(true);
+            }
+
+            if ((index1 == 2) && (index2 == 1)) {
+                i32.setEnabled(true);
+            }
+
+            if ((index1 == 2) && (index2 == 2)) {
+                i33.setEnabled(true);
+            }
+
+            if ((index1 == 2) && (index2 == 3)) {
+                i34.setEnabled(true);
+            }
+
+            if ((index1 == 3) && (index2 == 0)) {
+                i41.setEnabled(true);
+            }
+
+            if ((index1 == 3) && (index2 == 1)) {
+                i42.setEnabled(true);
+            }
+
+            if ((index1 == 3) && (index2 == 2)) {
+                i43.setEnabled(true);
+            }
+
+            if ((index1 == 3) && (index2 == 3)) {
+                i44.setEnabled(true);
+            }
+
+            if ((index1 == 4) && (index2 == 0)) {
+                i51.setEnabled(true);
+            }
+            if ((index1 == 4) && (index2 == 1)) {
+                i52.setEnabled(true);
+            }
+            if ((index1 == 4) && (index2 == 2)) {
+                i53.setEnabled(true);
+            }
+            if ((index1 == 4) && (index2 == 3)) {
+                i54.setEnabled(true);
+            }
+            if ((index1 == 5) && (index2 == 0)) {
+                i61.setEnabled(true);
+            }
+            if ((index1 == 5) && (index2 == 1)) {
+                i62.setEnabled(true);
+            }
+            if ((index1 == 5) && (index2 == 2)) {
+                i63.setEnabled(true);
+            }
+            if ((index1 == 5) && (index2 == 3)) {
+                i64.setEnabled(true);
+            }
+
+        }
+
+        if (action.equals("setbook")) {     // set a seat to contain books
+            if ((index1 == 0) && (index2 == 0)) {
+                i11.setIcon(new ImageIcon("book.png"));
+            }
+
+            if ((index1 == 0) && (index2 == 1)) {
+                i12.setIcon(new ImageIcon("book.png"));
+            }
+
+            if ((index1 == 0) && (index2 == 2)) {
+                i13.setIcon(new ImageIcon("book.png"));
+            }
+
+            if ((index1 == 0) && (index2 == 3)) {
+                i14.setIcon(new ImageIcon("book.png"));
+            }
+
+            if ((index1 == 1) && (index2 == 0)) {
+                i21.setIcon(new ImageIcon("book.png"));
+            }
+
+            if ((index1 == 1) && (index2 == 1)) {
+                i22.setIcon(new ImageIcon("book.png"));
+            }
+
+            if ((index1 == 1) && (index2 == 2)) {
+                i23.setIcon(new ImageIcon("book.png"));
+            }
+
+            if ((index1 == 1) && (index2 == 3)) {
+                i24.setIcon(new ImageIcon("book.png"));
+            }
+
+            if ((index1 == 2) && (index2 == 0)) {
+                i31.setIcon(new ImageIcon("book.png"));
+            }
+
+            if ((index1 == 2) && (index2 == 1)) {
+                i32.setIcon(new ImageIcon("book.png"));
+            }
+
+            if ((index1 == 2) && (index2 == 2)) {
+                i33.setIcon(new ImageIcon("book.png"));
+            }
+
+            if ((index1 == 2) && (index2 == 3)) {
+                i34.setIcon(new ImageIcon("book.png"));
+            }
+
+            if ((index1 == 3) && (index2 == 0)) {
+                i41.setIcon(new ImageIcon("book.png"));
+            }
+
+            if ((index1 == 3) && (index2 == 1)) {
+                i42.setIcon(new ImageIcon("book.png"));
+            }
+
+            if ((index1 == 3) && (index2 == 2)) {
+                i43.setIcon(new ImageIcon("book.png"));
+            }
+
+            if ((index1 == 3) && (index2 == 3)) {
+                i44.setIcon(new ImageIcon("book.png"));
+            }
+
+            if ((index1 == 4) && (index2 == 0)) {
+                i51.setIcon(new ImageIcon("book.png"));
+            }
+            if ((index1 == 4) && (index2 == 1)) {
+                i52.setIcon(new ImageIcon("book.png"));
+            }
+            if ((index1 == 4) && (index2 == 2)) {
+                i53.setIcon(new ImageIcon("book.png"));
+            }
+            if ((index1 == 4) && (index2 == 3)) {
+                i54.setIcon(new ImageIcon("book.png"));
+            }
+            if ((index1 == 5) && (index2 == 0)) {
+                i61.setIcon(new ImageIcon("book.png"));
+            }
+            if ((index1 == 5) && (index2 == 1)) {
+                i62.setIcon(new ImageIcon("book.png"));
+            }
+            if ((index1 == 5) && (index2 == 2)) {
+                i63.setIcon(new ImageIcon("book.png"));
+            }
+            if ((index1 == 5) && (index2 == 3)) {
+                i64.setIcon(new ImageIcon("book.png"));
+            }
+
+        }
+
+        if (action.equals("Player1")) {              // player1's occupied seats
+            if ((index1 == 0) && (index2 == 0)) {
+                i11.setIcon(new ImageIcon("red seat.png"));
+            }
+
+            if ((index1 == 0) && (index2 == 1)) {
+                i12.setIcon(new ImageIcon("red seat.png"));
+            }
+
+            if ((index1 == 0) && (index2 == 2)) {
+                i13.setIcon(new ImageIcon("red seat.png"));
+            }
+
+            if ((index1 == 0) && (index2 == 3)) {
+                i14.setIcon(new ImageIcon("red seat.png"));
+            }
+
+            if ((index1 == 1) && (index2 == 0)) {
+                i21.setIcon(new ImageIcon("red seat.png"));
+            }
+
+            if ((index1 == 1) && (index2 == 1)) {
+                i22.setIcon(new ImageIcon("red seat.png"));
+            }
+
+            if ((index1 == 1) && (index2 == 2)) {
+                i23.setIcon(new ImageIcon("red seat.png"));
+            }
+
+            if ((index1 == 1) && (index2 == 3)) {
+                i24.setIcon(new ImageIcon("red seat.png"));
+            }
+
+            if ((index1 == 2) && (index2 == 0)) {
+                i31.setIcon(new ImageIcon("red seat.png"));
+            }
+
+            if ((index1 == 2) && (index2 == 1)) {
+                i32.setIcon(new ImageIcon("red seat.png"));
+            }
+
+            if ((index1 == 2) && (index2 == 2)) {
+                i33.setIcon(new ImageIcon("red seat.png"));
+            }
+
+            if ((index1 == 2) && (index2 == 3)) {
+                i34.setIcon(new ImageIcon("red seat.png"));
+            }
+
+            if ((index1 == 3) && (index2 == 0)) {
+                i41.setIcon(new ImageIcon("red seat.png"));
+            }
+
+            if ((index1 == 3) && (index2 == 1)) {
+                i42.setIcon(new ImageIcon("red seat.png"));
+            }
+
+            if ((index1 == 3) && (index2 == 2)) {
+                i43.setIcon(new ImageIcon("red seat.png"));
+            }
+
+            if ((index1 == 3) && (index2 == 3)) {
+                i44.setIcon(new ImageIcon("red seat.png"));
+            }
+
+            if ((index1 == 4) && (index2 == 0)) {
+                i51.setIcon(new ImageIcon("red seat.png"));
+            }
+            if ((index1 == 4) && (index2 == 1)) {
+                i52.setIcon(new ImageIcon("red seat.png"));
+            }
+            if ((index1 == 4) && (index2 == 2)) {
+                i53.setIcon(new ImageIcon("red seat.png"));
+            }
+            if ((index1 == 4) && (index2 == 3)) {
+                i54.setIcon(new ImageIcon("red seat.png"));
+            }
+            if ((index1 == 5) && (index2 == 0)) {
+                i61.setIcon(new ImageIcon("red seat.png"));
+            }
+            if ((index1 == 5) && (index2 == 1)) {
+                i62.setIcon(new ImageIcon("red seat.png"));
+            }
+            if ((index1 == 5) && (index2 == 2)) {
+                i63.setIcon(new ImageIcon("red seat.png"));
+            }
+            if ((index1 == 5) && (index2 == 3)) {
+                i64.setIcon(new ImageIcon("red seat.png"));
+            }
+        }
+
+        if (action.equals("Player2")) {     // player2's occupied seats
+            if ((index1 == 0) && (index2 == 0)) {
+                i11.setIcon(new ImageIcon("blue seat.png"));
+            }
+
+            if ((index1 == 0) && (index2 == 1)) {
+                i12.setIcon(new ImageIcon("blue seat.png"));
+            }
+
+            if ((index1 == 0) && (index2 == 2)) {
+                i13.setIcon(new ImageIcon("blue seat.png"));
+            }
+
+            if ((index1 == 0) && (index2 == 3)) {
+                i14.setIcon(new ImageIcon("blue seat.png"));
+            }
+
+            if ((index1 == 1) && (index2 == 0)) {
+                i21.setIcon(new ImageIcon("blue seat.png"));
+            }
+
+            if ((index1 == 1) && (index2 == 1)) {
+                i22.setIcon(new ImageIcon("blue seat.png"));
+            }
+
+            if ((index1 == 1) && (index2 == 2)) {
+                i23.setIcon(new ImageIcon("blue seat.png"));
+            }
+
+            if ((index1 == 1) && (index2 == 3)) {
+                i24.setIcon(new ImageIcon("blue seat.png"));
+            }
+
+            if ((index1 == 2) && (index2 == 0)) {
+                i31.setIcon(new ImageIcon("blue seat.png"));
+            }
+
+            if ((index1 == 2) && (index2 == 1)) {
+                i32.setIcon(new ImageIcon("blue seat.png"));
+            }
+
+            if ((index1 == 2) && (index2 == 2)) {
+                i33.setIcon(new ImageIcon("blue seat.png"));
+            }
+
+            if ((index1 == 2) && (index2 == 3)) {
+                i34.setIcon(new ImageIcon("blue seat.png"));
+            }
+
+            if ((index1 == 3) && (index2 == 0)) {
+                i41.setIcon(new ImageIcon("blue seat.png"));
+            }
+
+            if ((index1 == 3) && (index2 == 1)) {
+                i42.setIcon(new ImageIcon("blue seat.png"));
+            }
+
+            if ((index1 == 3) && (index2 == 2)) {
+                i43.setIcon(new ImageIcon("blue seat.png"));
+            }
+
+            if ((index1 == 3) && (index2 == 3)) {
+                i44.setIcon(new ImageIcon("blue seat.png"));
+            }
+
+            if ((index1 == 4) && (index2 == 0)) {
+                i51.setIcon(new ImageIcon("blue seat.png"));
+            }
+            if ((index1 == 4) && (index2 == 1)) {
+                i52.setIcon(new ImageIcon("blue seat.png"));
+            }
+            if ((index1 == 4) && (index2 == 2)) {
+                i53.setIcon(new ImageIcon("blue seat.png"));
+            }
+            if ((index1 == 4) && (index2 == 3)) {
+                i54.setIcon(new ImageIcon("blue seat.png"));
+            }
+            if ((index1 == 5) && (index2 == 0)) {
+                i61.setIcon(new ImageIcon("blue seat.png"));
+            }
+            if ((index1 == 5) && (index2 == 1)) {
+                i62.setIcon(new ImageIcon("blue seat.png"));
+            }
+            if ((index1 == 5) && (index2 == 2)) {
+                i63.setIcon(new ImageIcon("blue seat.png"));
+            }
+            if ((index1 == 5) && (index2 == 3)) {
+                i64.setIcon(new ImageIcon("blue seat.png"));
+            }
+
+        }
+
+        if (action.equals("occupy")) {          // occupying a seat (when setting up the random classroom)
+            if ((index1 == 0) && (index2 == 0)) {
+                i11.setIcon(new ImageIcon("occupied.png"));
+            }
+
+            if ((index1 == 0) && (index2 == 1)) {
+                i12.setIcon(new ImageIcon("occupied.png"));
+            }
+
+            if ((index1 == 0) && (index2 == 2)) {
+                i13.setIcon(new ImageIcon("occupied.png"));
+            }
+
+            if ((index1 == 0) && (index2 == 3)) {
+                i14.setIcon(new ImageIcon("occupied.png"));
+            }
+
+            if ((index1 == 1) && (index2 == 0)) {
+                i21.setIcon(new ImageIcon("occupied.png"));
+            }
+
+            if ((index1 == 1) && (index2 == 1)) {
+                i22.setIcon(new ImageIcon("occupied.png"));
+            }
+
+            if ((index1 == 1) && (index2 == 2)) {
+                i23.setIcon(new ImageIcon("occupied.png"));
+            }
+
+            if ((index1 == 1) && (index2 == 3)) {
+                i24.setIcon(new ImageIcon("occupied.png"));
+            }
+
+            if ((index1 == 2) && (index2 == 0)) {
+                i31.setIcon(new ImageIcon("occupied.png"));
+            }
+
+            if ((index1 == 2) && (index2 == 1)) {
+                i32.setIcon(new ImageIcon("occupied.png"));
+            }
+
+            if ((index1 == 2) && (index2 == 2)) {
+                i33.setIcon(new ImageIcon("occupied.png"));
+            }
+
+            if ((index1 == 2) && (index2 == 3)) {
+                i34.setIcon(new ImageIcon("occupied.png"));
+            }
+
+            if ((index1 == 3) && (index2 == 0)) {
+                i41.setIcon(new ImageIcon("occupied.png"));
+            }
+
+            if ((index1 == 3) && (index2 == 1)) {
+                i42.setIcon(new ImageIcon("occupied.png"));
+            }
+
+            if ((index1 == 3) && (index2 == 2)) {
+                i43.setIcon(new ImageIcon("occupied.png"));
+            }
+
+            if ((index1 == 3) && (index2 == 3)) {
+                i44.setIcon(new ImageIcon("occupied.png"));
+            }
+
+            if ((index1 == 4) && (index2 == 0)) {
+                i51.setIcon(new ImageIcon("occupied.png"));
+            }
+            if ((index1 == 4) && (index2 == 1)) {
+                i52.setIcon(new ImageIcon("occupied.png"));
+            }
+            if ((index1 == 4) && (index2 == 2)) {
+                i53.setIcon(new ImageIcon("occupied.png"));
+            }
+            if ((index1 == 4) && (index2 == 3)) {
+                i54.setIcon(new ImageIcon("occupied.png"));
+            }
+            if ((index1 == 5) && (index2 == 0)) {
+                i61.setIcon(new ImageIcon("occupied.png"));
+            }
+            if ((index1 == 5) && (index2 == 1)) {
+                i62.setIcon(new ImageIcon("occupied.png"));
+            }
+            if ((index1 == 5) && (index2 == 2)) {
+                i63.setIcon(new ImageIcon("occupied.png"));
+            }
+            if ((index1 == 5) && (index2 == 3)) {
+                i64.setIcon(new ImageIcon("occupied.png"));
+            }
+
+        }
+    }
+
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton i11;
+    private javax.swing.JButton i12;
+    private javax.swing.JButton i13;
+    private javax.swing.JButton i14;
+    private javax.swing.JButton i21;
+    private javax.swing.JButton i22;
+    private javax.swing.JButton i23;
+    private javax.swing.JButton i24;
+    private javax.swing.JButton i31;
+    private javax.swing.JButton i32;
+    private javax.swing.JButton i33;
+    private javax.swing.JButton i34;
+    private javax.swing.JButton i41;
+    private javax.swing.JButton i42;
+    private javax.swing.JButton i43;
+    private javax.swing.JButton i44;
+    private javax.swing.JButton i51;
+    private javax.swing.JButton i52;
+    private javax.swing.JButton i53;
+    private javax.swing.JButton i54;
+    private javax.swing.JButton i61;
+    private javax.swing.JButton i62;
+    private javax.swing.JButton i63;
+    private javax.swing.JButton i64;
+    private javax.swing.JTextArea info;
+    private javax.swing.JScrollPane jScrollPane1;
+    // End of variables declaration//GEN-END:variables
+}
